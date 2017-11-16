@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Divisas</title>
+</head>
+<body>
+	
+
+	<input type="text" id="cantidad-pesos">
+	<button id="convert-button">Convert</button>
+	<div id="converted-result"></div>
+
+	<select name="foo" id="foo">
+		<option value="1">1</option>
+		<option value="2">2</option>
+	</select>
+	
+    <script>
+		(function(){
+			var change = document.getElementById("foo")
+			change.addEventListener("change", function(){
+				console.log(this.value)
+			})
+
+			//https://min-api.cryptocompare.com/data/price?fsym=MXND&tsyms=BTC
+			var changeValue,
+				button = document.getElementById("convert-button"),
+				input = document.getElementById("cantidad-pesos"),
+				resultado = document.getElementById("converted-result")
+
+			// Escuchar un evento -click
+			button.addEventListener('click', function(){
+				var cantidad = input.value
+				fetch('https://min-api.cryptocompare.com/data/price?fsym=MXN&tsyms=BTC')
+					.then(response => {
+						if(response.ok){
+							return Promise.resolve(response)
+						} else {
+							return Promise.reject(new Error("No funciona"))
+						}
+					})
+					.then(response => response.json())
+					.then(data => {
+						// Si tiene éxito
+						var valor = convertir(data.BTC, cantidad)
+						desplegar(valor)
+						console.log(data)
+
+					})
+					.catch(error => {
+						console.log(`Error: ${error}`)
+					})
+			})
+			
+			// Conversión
+			function convertir(tasa, moneda){
+				return tasa * moneda
+			}
+
+			// Desplegar
+			function desplegar(valor){
+				resultado.innerHTML = valor
+			}
+		})()
+    </script>
+</body>
+</html>
